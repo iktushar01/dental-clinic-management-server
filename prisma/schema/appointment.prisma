@@ -1,0 +1,48 @@
+model Appointment {
+  id              String            @id @default(uuid())
+  clinicId        String
+  clinic          Clinic            @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  patientId       String            // FK → User (role = PATIENT)
+  patient         User              @relation("PatientAppointments", fields: [patientId], references: [id], onDelete: Cascade)
+  dentistId       String
+  dentist         Dentist           @relation(fields: [dentistId], references: [id], onDelete: Cascade)
+  serviceId       String?
+  service         ClinicService?    @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+
+  // Scheduling
+  date            DateTime          @db.Date
+  startTime       String            // "10:00"
+  endTime         String            // "10:30"
+
+  // Status
+  status          AppointmentStatus @default(PENDING)
+  type            AppointmentType   @default(REGULAR)
+
+  // Patient info at booking
+  patientNotes    String?
+  symptoms        String?
+
+  // Dentist notes after visit
+  dentistNotes    String?
+  diagnosis       String?
+
+  // Cancellation
+  cancelledBy     String?           // userId who cancelled
+  cancelReason    String?
+  cancelledAt     DateTime?
+
+  isDeleted       Boolean           @default(false)
+  deletedAt       DateTime?
+
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+
+  @@index([clinicId])
+  @@index([patientId])
+  @@index([dentistId])
+  @@index([date])
+  @@index([status])
+  @@index([isDeleted])
+  @@map("appointments")
+}

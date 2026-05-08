@@ -1,0 +1,101 @@
+model Clinic {
+  id               String           @id @default(uuid())
+  name             String
+  slug             String           @unique  // used in URL: /[slug]/
+  email            String?
+  phone            String?
+  address          String?
+  city             String?
+  country          String           @default("BD")
+  mapEmbedUrl      String?
+
+
+  // SEO
+  metaTitle        String?
+  metaDescription  String?
+
+  // Status
+  isActive         Boolean          @default(true)
+  isDeleted        Boolean          @default(false)
+
+  // Timestamps
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  // Relations
+  branding         ClinicBranding?
+  services         ClinicService[]
+  dentists         Dentist[]
+  appointments     Appointment[]
+  
+
+  @@index([slug])
+  @@index([isActive])
+  @@index([isDeleted])
+  @@map("clinics")
+}
+
+
+
+
+model ClinicBranding {
+  id              String   @id @default(uuid())
+  clinicId        String   @unique
+  clinic          Clinic   @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+
+  // Visual Identity
+  logo            String?                 // Cloudinary URL
+  favicon         String?                 // Cloudinary URL
+  primaryColor    String  @default("#06B6D4")
+  secondaryColor  String  @default("#0F172A")
+  accentColor     String  @default("#F8FAFC")
+
+  // Hero Section
+  heroHeadline    String?
+  heroSubheadline String?
+  heroImage       String?                 // Cloudinary URL
+  heroCtaText     String  @default("Book Appointment")
+
+  // Banner images (stored as JSON array of Cloudinary URLs)
+  bannerImages    String[] @default([])
+
+  // Social Links
+  facebook        String?
+  instagram       String?
+  linkedin        String?
+  twitter         String?
+  whatsapp        String?
+  youtube         String?
+
+  // Footer
+  footerTagline   String?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("clinic_brandings")
+}
+
+
+model ClinicService {
+  id          String   @id @default(uuid())
+  clinicId    String
+  clinic      Clinic   @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+  icon        String?           // Icon name or Cloudinary URL
+  price       Decimal?          @db.Decimal(10, 2)
+  duration    Int?              // In minutes
+  isActive    Boolean           @default(true)
+  sortOrder   Int               @default(0)
+
+  appointments Appointment[]
+
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@index([clinicId])
+  @@index([isActive])
+  @@map("clinic_services")
+}

@@ -1,0 +1,56 @@
+model Dentist {
+  id               String    @id @default(uuid())
+  userId           String    @unique
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  clinicId         String
+  clinic           Clinic    @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+
+  specialization   String
+  qualifications   String[]  @default([])  // ["BDS", "FCPS"]
+  experience       Int       @default(0)   // Years
+  bio              String?
+  consultationFee  Decimal   @default(0)   @db.Decimal(10, 2)
+
+  // Computed / cached fields (recalculate on new review)
+  averageRating    Float     @default(0)
+  totalReviews     Int       @default(0)
+
+  isApproved       Boolean   @default(false)  // Super Admin approval
+  isAccepting      Boolean   @default(true)   // Currently taking patients
+  isDeleted        Boolean   @default(false)
+  deletedAt        DateTime?
+
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  // Relations
+  availability     DentistAvailability[]
+  appointments     Appointment[]
+  // reviews          Review[]
+
+  @@index([clinicId])
+  @@index([specialization])
+  @@index([isApproved])
+  @@index([isDeleted])
+  @@map("dentists")
+}
+
+
+model DentistAvailability {
+  id          String    @id @default(uuid())
+  dentistId   String
+  dentist     Dentist   @relation(fields: [dentistId], references: [id], onDelete: Cascade)
+
+  dayOfWeek   DayOfWeek
+  startTime   String              // "09:00" — 24h format
+  endTime     String              // "17:00"
+  slotDuration Int     @default(30) // Minutes per slot
+  isActive    Boolean @default(true)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([dentistId, dayOfWeek])
+  @@index([dentistId])
+  @@map("dentist_availabilities")
+}
