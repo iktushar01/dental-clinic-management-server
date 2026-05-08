@@ -1,22 +1,22 @@
-# Acadex Server
+# Dental Clinic Management Server
 
-Acadex Server is the developer-friendly backend for Acadex. It powers authentication, classroom management, subjects, folders, notes, favorites, comments, notices, and admin workflows through a modular Express + Prisma API.
+Dental Clinic Management Server is the developer-friendly backend for Dental Clinic Management. It powers authentication, clinic management, services, appointments, and admin workflows through a modular Express + Prisma API.
 
 ## Live URLs
 
-- Production API Root: [https://acadex-server.vercel.app](https://acadex-server.vercel.app)
-- Versioned API Base: [https://acadex-server.vercel.app/api/v1](https://acadex-server.vercel.app/api/v1)
-- Production Client: [https://acadex-client.vercel.app](https://acadex-client.vercel.app)
+- Production API Root: [https://dental-clinic-management-server.vercel.app](https://dental-clinic-management-server.vercel.app)
+- Versioned API Base: [https://dental-clinic-management-server.vercel.app/api/v1](https://dental-clinic-management-server.vercel.app/api/v1)
+- Production Client: [https://dental-clinic-management-client.vercel.app](https://dental-clinic-management-client.vercel.app)
 
 ## Features
 
 - Better Auth based auth system with email/password and Google login
 - JWT access and refresh token flow
 - Prisma-powered PostgreSQL data layer
-- Modular route structure for auth, users, classrooms, subjects, folders, notes, favorites, comments, notices, and admins
+- Modular route structure for auth, users, clinics, dentists, services, appointments, and admins
 - Cloudinary-based media upload pipeline
 - OTP email verification and password reset flow
-- Classroom membership, CR management, and note approval support
+- Clinic membership, dentist management, and appointment scheduling
 - TypeScript-first codebase with validation and reusable utilities
 
 ## Technologies Used
@@ -95,11 +95,8 @@ npm run start
 
 - `/api/v1/auth`
 - `/api/v1/users`
-- `/api/v1/classrooms`
-- `/api/v1/subjects`
-- `/api/v1/folders`
-- `/api/v1/notes`
-- `/api/v1/favorites`
-- `/api/v1/comments`
-- `/api/v1/notices`
+- `/api/v1/clinics`
+- `/api/v1/dentists`
+- `/api/v1/services`
+- `/api/v1/appointments`
 - `/api/v1/admins`
