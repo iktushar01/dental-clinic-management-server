@@ -95,8 +95,12 @@ const registerPatient = async (payload: IRegisterStudent, fileBuffer?: Buffer, f
         throw new AppError(StatusCodes.BAD_REQUEST, "User registration failed");
     }
 
+    console.log("better-auth returned user:", authData.user);
+    const dbUserExists = await prisma.user.findUnique({ where: { id: authData.user.id }});
+    console.log("dbUserExists before transaction:", !!dbUserExists);
+
     try {
-        // Create the student profile and update the user's image URL in a single transaction
+        // Create the patient profile and update the user's image URL in a single transaction
         const [student] = await prisma.$transaction(async (tx) => {
             const createdStudent = await tx.patient.create({
                 data: {
