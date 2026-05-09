@@ -48,7 +48,7 @@ const buildTokenPair = (user: {
 
 // ─── Register ─────────────────────────────────────────────────────────────────
 
-const registerStudent = async (payload: IRegisterStudent, fileBuffer?: Buffer, fileName?: string) => {
+const registerPatient = async (payload: IRegisterStudent, fileBuffer?: Buffer, fileName?: string) => {
     const { name, email, password } = payload;
 
     // 1. Prepare upload promise
@@ -62,7 +62,16 @@ const registerStudent = async (payload: IRegisterStudent, fileBuffer?: Buffer, f
 
     // 2. Prepare auth user promise (without image initially to run them in parallel)
     const signUpPromise = auth.api.signUpEmail({
-        body: { name, email, password },
+        body: { 
+            name, 
+            email, 
+            password,
+            role: Role.PATIENT,
+            status: UserStatus.ACTIVE,
+            needPasswordChange: false,
+            isDeleted: false,
+            failedLoginAttempts: 0
+        },
     });
 
     // Run Cloudinary Upload (I/O bound) and Bcrypt Hashing (CPU bound) concurrently to save 1-2 seconds
@@ -89,7 +98,7 @@ const registerStudent = async (payload: IRegisterStudent, fileBuffer?: Buffer, f
     try {
         // Create the student profile and update the user's image URL in a single transaction
         const [student] = await prisma.$transaction(async (tx) => {
-            const createdStudent = await tx.student.create({
+            const createdStudent = await tx.patient.create({
                 data: {
                     userId: authData.user.id,
                     name,
@@ -202,7 +211,7 @@ const fetchCurrentUserById = async (userId: string) => {
     const dbUser = await prisma.user.findUnique({
         where: { id: userId },
         include: {
-            student: true,
+            patient: true,
             admin: true,
         },
     });
@@ -236,7 +245,7 @@ const updateProfile = async (payload: IUpdateProfilePayload) => {
         select: {
             id: true,
             role: true,
-            student: { select: { id: true } },
+            patient: { select: { id: true } },
             admin: { select: { id: true } },
         },
     });
@@ -271,8 +280,8 @@ const updateProfile = async (payload: IUpdateProfilePayload) => {
             });
         }
 
-        if (role === Role.STUDENT && dbUser.student) {
-            const studentUpdateData: Prisma.StudentUpdateInput = {};
+        if (role === Role.PATIENT && dbUser.patient) {
+            const studentUpdateData: Prisma.PatientUpdateInput = {};
 
             if (name !== undefined) {
                 studentUpdateData.name = name;
@@ -291,7 +300,7 @@ const updateProfile = async (payload: IUpdateProfilePayload) => {
             }
 
             if (Object.keys(studentUpdateData).length > 0) {
-                await tx.student.update({
+                await tx.patient.update({
                     where: { userId },
                     data: studentUpdateData,
                 });
@@ -506,12 +515,12 @@ const googleLoginSuccess = async (session: {
     const { user } = session;
 
     // Lazily create the student profile if this is the first Google sign-in
-    const studentExists = await prisma.student.findUnique({
+    const studentExists = await prisma.patient.findUnique({
         where: { userId: user.id },
     });
 
     if (!studentExists) {
-        await prisma.student.create({
+        await prisma.patient.create({
             data: {
                 userId: user.id,
                 name: user.name,
@@ -560,7 +569,7 @@ const issueTokensFromOAuthCode = async (user: {
 // ─── Exports ──────────────────────────────────────────────────────────────────
 
 export const AuthService = {
-    registerStudent,
+    registerPatient,
     loginUser,
     getMe,
     updateProfile,

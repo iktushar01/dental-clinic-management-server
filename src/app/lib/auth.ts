@@ -23,7 +23,7 @@ export const auth = betterAuth({
             clientSecret: envVars.GOOGLE_CLIENT_SECRET,
             mapProfileToUser: (profile: any) => {
                 return {
-                    role: Role.STUDENT,
+                    role: Role.PATIENT,
                     needPasswordChange: false,
                     emailVerified: true,
                     isDeleted: false,
@@ -49,7 +49,7 @@ export const auth = betterAuth({
     },
     user: {
         additionalFields: {
-            role: { type: "string", required: true, defaultValue: Role.STUDENT },
+            role: { type: "string", required: true, defaultValue: Role.PATIENT },
             status: { type: "string", required: true, defaultValue: UserStatus.ACTIVE },
             needPasswordChange: { type: "boolean", required: true, defaultValue: false },
             isDeleted: { type: "boolean", required: true, defaultValue: false },

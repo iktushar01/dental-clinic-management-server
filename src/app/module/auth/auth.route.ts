@@ -24,7 +24,7 @@ router.post(
     "/register",
     memoryUpload.single("image"),
     validateRequest(registerStudentZodSchema),
-    AuthController.registerStudent,
+    AuthController.registerPatient,
 );
 
 router.post(
@@ -62,7 +62,7 @@ router.get("/oauth/error", AuthController.handleOAuthError);
 
 // ─── Authenticated routes (all roles) ────────────────────────────────────────
 
-const allRoles = [Role.STUDENT, Role.ADMIN, Role.SUPER_ADMIN] as const;
+const allRoles = [Role.PATIENT, Role.DENTIST, Role.ADMIN, Role.SUPER_ADMIN] as const;
 
 router.get("/me", checkAuth(...allRoles), AuthController.getMe);
 

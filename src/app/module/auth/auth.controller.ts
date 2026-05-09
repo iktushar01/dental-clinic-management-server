@@ -41,10 +41,10 @@ const clearAuthCookies = (res: Response) => {
 
 // ─── Register ─────────────────────────────────────────────────────────────────
 
-const registerStudent = catchAsync(async (req: Request, res: Response) => {
+const registerPatient = catchAsync(async (req: Request, res: Response) => {
     const fileBuffer = (req as any).file?.buffer;
     const fileName = (req as any).file?.originalname;
-    const result = await AuthService.registerStudent(req.body, fileBuffer, fileName);
+    const result = await AuthService.registerPatient(req.body, fileBuffer, fileName);
 
     setAuthCookies(res, {
         accessToken: result.accessToken,
@@ -345,7 +345,7 @@ const exchangeOAuthCode = catchAsync(async (req: Request, res: Response) => {
 // ─── Exports ──────────────────────────────────────────────────────────────────
 
 export const AuthController = {
-    registerStudent,
+    registerPatient,
     loginUser,
     getMe,
     updateProfile,
