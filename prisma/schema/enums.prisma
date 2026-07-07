@@ -1,8 +1,11 @@
 enum Role {
-  DENTIST
-  PATIENT
-  ADMIN
   SUPER_ADMIN
+  ADMIN
+  RECEPTIONIST
+  DENTIST
+  ASSISTANT
+  ACCOUNTANT
+  PATIENT
 }
 
 enum UserStatus {

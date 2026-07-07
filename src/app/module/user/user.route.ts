@@ -7,7 +7,7 @@ import {
     createAdminZodSchema,
 } from "./user.validation";
 
-const router = Router();
+const router: Router = Router();
 
 // ─── Admin provisioning ───────────────────────────────────────────────────────
 
@@ -22,4 +22,4 @@ router.post(
     UserController.createAdmin,
 );
 
-export const UserRoutes = router;
+export const UserRoutes: Router = router;

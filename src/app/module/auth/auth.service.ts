@@ -8,6 +8,7 @@ import { tokenUtils } from "../../utils/token";
 import { jwtUtils } from "../../utils/jwt";
 import { envVars } from "../../../config/env";
 import { uploadFileToCloudinary, deleteFileFromCloudinary } from "../../../config/cloudinary.config";
+import { generatePatientId } from "../../utils/patientId";
 import {
     IChangePassWordPayload,
     ILoginUser,
@@ -104,6 +105,7 @@ const registerPatient = async (payload: IRegisterStudent, fileBuffer?: Buffer, f
         const [student] = await prisma.$transaction(async (tx) => {
             const createdStudent = await tx.patient.create({
                 data: {
+                    patientId: generatePatientId(),
                     userId: authData.user.id,
                     name,
                     email,
@@ -142,7 +144,7 @@ const registerPatient = async (payload: IRegisterStudent, fileBuffer?: Buffer, f
             accessToken,
             refreshToken,
         };
-    } catch (error) {
+    } catch (error: unknown) {
         // Rollback the auth user and delete the uploaded image if needed
         try {
             if (imageUrl) {
@@ -153,10 +155,12 @@ const registerPatient = async (payload: IRegisterStudent, fileBuffer?: Buffer, f
             console.error("Rollback failed for user:", authData.user.id, rollbackErr);
         }
 
-        if (
-            error instanceof PrismaValue.PrismaClientKnownRequestError &&
-            error.code === "P2002"
-        ) {
+        const prismaError =
+            error instanceof PrismaValue.PrismaClientKnownRequestError
+                ? (error as { code?: string })
+                : null;
+
+        if (prismaError?.code === "P2002") {
             throw new AppError(
                 StatusCodes.CONFLICT,
                 "This email is already registered. Please log in or use a different email."
@@ -526,6 +530,7 @@ const googleLoginSuccess = async (session: {
     if (!studentExists) {
         await prisma.patient.create({
             data: {
+                patientId: generatePatientId(),
                 userId: user.id,
                 name: user.name,
                 email: user.email,

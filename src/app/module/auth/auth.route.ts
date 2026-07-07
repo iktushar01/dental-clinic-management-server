@@ -16,7 +16,7 @@ import {
 
 
 
-const router = Router();
+const router: Router = Router();
 
 // ─── Public routes ────────────────────────────────────────────────────────────
 
@@ -62,7 +62,15 @@ router.get("/oauth/error", AuthController.handleOAuthError);
 
 // ─── Authenticated routes (all roles) ────────────────────────────────────────
 
-const allRoles = [Role.PATIENT, Role.DENTIST, Role.ADMIN, Role.SUPER_ADMIN] as const;
+const allRoles = [
+    Role.PATIENT,
+    Role.DENTIST,
+    Role.ADMIN,
+    Role.SUPER_ADMIN,
+    Role.RECEPTIONIST,
+    Role.ASSISTANT,
+    Role.ACCOUNTANT,
+] as const;
 
 router.get("/me", checkAuth(...allRoles), AuthController.getMe);
 
@@ -83,4 +91,4 @@ router.post(
 
 router.post("/logout", checkAuth(...allRoles), AuthController.logoutUser);
 
-export const AuthRoute = router;
+export const AuthRoute: Router = router;

@@ -5,7 +5,7 @@ import { validateRequest } from "../../middleware/validateRequest";
 import { AdminController } from "./admin.controller";
 import { updateAdminZodSchema } from "./admin.validation";
 
-const router = Router();
+const router: Router = Router();
 
 router.get("/stats",
     checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
@@ -23,4 +23,4 @@ router.delete("/:id",
     checkAuth(Role.SUPER_ADMIN),
     AdminController.deleteAdmin);
 
-export const AdminRoutes = router;
+export const AdminRoutes: Router = router;

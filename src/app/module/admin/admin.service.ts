@@ -1,5 +1,5 @@
 import { StatusCodes } from "http-status-codes";
-import { ClassroomStatus, NoteStatus, Role, UserStatus } from "../../lib/prisma-exports";
+import { Role, UserStatus } from "../../lib/prisma-exports";
 import AppError from "../../errorHelpers/AppError";
 import { prisma } from "../../lib/prisma";
 import { IRequestUser } from "../auth/auth.interface";
@@ -120,6 +120,21 @@ const getAdminById = async (id: string, requestingUser: IRequestUser) => {
     return admin;
 };
 
+const getDashboardStats = async (requestingUser: IRequestUser) => {
+    if (requestingUser.role !== Role.ADMIN && requestingUser.role !== Role.SUPER_ADMIN) {
+        throw new AppError(StatusCodes.FORBIDDEN, "Only admin roles can access dashboard stats");
+    }
+
+    const [totalAdmins, totalPatients, totalDentists, totalAppointments] = await Promise.all([
+        prisma.admin.count({ where: { isDeleted: false } }),
+        prisma.patient.count({ where: { isDeleted: false } }),
+        prisma.dentist.count({ where: { isDeleted: false } }),
+        prisma.appointment.count({ where: { isDeleted: false } }),
+    ]);
+
+    return { totalAdmins, totalPatients, totalDentists, totalAppointments };
+};
+
 const updateAdmin = async (
     id: string,
     payload: IUpdateAdminPayload,
@@ -197,6 +212,7 @@ const deleteAdmin = async (id: string, requestingUser: IRequestUser) => {
 };
 
 export const AdminService = {
+    getDashboardStats,
     getAllAdmins,
     getAdminById,
     updateAdmin,

@@ -1,11 +1,20 @@
 model Patient {
   id             String          @id @default(uuid())
+  patientId      String          @unique
   name           String
   email          String          @unique
   profilePhoto   String?
   contactNumber  String?
   address        String?
+  dateOfBirth    DateTime?
   gender         Gender?
+  bloodGroup     String?
+  allergies      String?
+  medicalHistory String?
+  emergencyName  String?
+  emergencyPhone String?
+  notes          String?
+  tags           String[]
   isDeleted      Boolean         @default(false)
   deletedAt      DateTime?
   createdAt      DateTime        @default(now())
@@ -13,7 +22,9 @@ model Patient {
   userId         String          @unique
   user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([patientId])
   @@index([email])
+  @@index([name])
   @@index([isDeleted])
   @@map("patients")
 }

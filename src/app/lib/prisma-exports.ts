@@ -14,17 +14,13 @@ export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus];
 export const Gender = prismaModule.Gender;
 export type Gender = (typeof Gender)[keyof typeof Gender];
 
-export const ClassroomStatus = prismaModule.ClassroomStatus;
-export type ClassroomStatus =
-  (typeof ClassroomStatus)[keyof typeof ClassroomStatus];
+export const AppointmentStatus = prismaModule.AppointmentStatus;
+export type AppointmentStatus =
+  (typeof AppointmentStatus)[keyof typeof AppointmentStatus];
 
-export const MembershipRole = prismaModule.MembershipRole;
-export type MembershipRole =
-  (typeof MembershipRole)[keyof typeof MembershipRole];
+export const AppointmentType = prismaModule.AppointmentType;
+export type AppointmentType =
+  (typeof AppointmentType)[keyof typeof AppointmentType];
 
-export const NoteStatus = prismaModule.NoteStatus;
-export type NoteStatus = (typeof NoteStatus)[keyof typeof NoteStatus];
-
-export const InstitutionLevel = prismaModule.InstitutionLevel;
-export type InstitutionLevel =
-  (typeof InstitutionLevel)[keyof typeof InstitutionLevel];
+export const DayOfWeek = prismaModule.DayOfWeek;
+export type DayOfWeek = (typeof DayOfWeek)[keyof typeof DayOfWeek];
